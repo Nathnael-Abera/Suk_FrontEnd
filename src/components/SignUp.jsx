@@ -2,16 +2,41 @@ import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+// import server from "../server";
 
-function Login() {
+function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
   const [avatar, setAvatar] = useState(null);
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    console.log("registerd");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    //config
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    //formdata
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("file", avatar);
+
+    axios
+      .post(`http://localhost:3000/api/user/create-user`, formData, config)
+      .then((res) => {
+        console.log(res);
+        alert("user created");
+        navigate("/");
+      })
+      .catch((err) => console.log(err));
   };
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -27,7 +52,7 @@ function Login() {
       </div>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form action="" className="space-y-6">
+          <form action="" className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="name"
@@ -157,4 +182,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default SignUp;
