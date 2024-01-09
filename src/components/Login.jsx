@@ -1,11 +1,44 @@
+import axios from "axios";
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("clicked");
+    //config
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    //form Data
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+
+    // axios post
+    axios
+      .post("http://localhost:3000/api/user/login", formData, config, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        toast.success("Login Success !");
+        navigate("/");
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -15,7 +48,7 @@ function Login() {
       </div>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form action="" className="space-y-6">
+          <form action="" className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="email"
@@ -104,10 +137,13 @@ function Login() {
             </div>
 
             <div className=" flex items-center w-full">
-            <h4>Not have any account?</h4>
-            <Link to="/sign-up" className="pl-2 text-blue-600 hover:text-blue-500">
-              Sign-Up
-            </Link>
+              <h4>Not have any account?</h4>
+              <Link
+                to="/sign-up"
+                className="pl-2 text-blue-600 hover:text-blue-500"
+              >
+                Sign-Up
+              </Link>
             </div>
           </form>
         </div>
