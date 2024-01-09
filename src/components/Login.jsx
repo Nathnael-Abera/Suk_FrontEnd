@@ -30,7 +30,7 @@ function Login() {
       .post("http://localhost:3000/api/user/login", formData, config, {
         withCredentials: true,
       })
-      .then((res) => {
+      .then(() => {
         toast.success("Login Success !");
         navigate("/");
       })
